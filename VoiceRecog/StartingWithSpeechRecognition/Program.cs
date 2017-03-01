@@ -12,7 +12,7 @@ namespace StartingWithSpeechRecognition
     {
         static SpeechRecognitionEngine _recognizer = null;
         static ManualResetEvent manualResetEvent = null;
-        private RS232 mConn;
+        private static RS232 mConn;
 
         static void Main(string[] args)
         {
@@ -71,7 +71,11 @@ namespace StartingWithSpeechRecognition
             _recognizer = new SpeechRecognitionEngine();
             _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("test"))); // load a "test" grammar
             _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("exit"))); // load a "exit" grammar
-            _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("enova restart"))); // load a "test" grammar
+            _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("enova"))); // load a "test" grammar
+            _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("reboot"))); // load a "test" grammar
+            _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("enova reboot"))); // load a "test" grammar
+
+
 
             _recognizer.SpeechRecognized += _recognizeSpeechAndWriteToConsole_SpeechRecognized; // if speech is recognized, call the specified method
             _recognizer.SpeechRecognitionRejected += _recognizeSpeechAndWriteToConsole_SpeechRecognitionRejected; // if recognized speech is rejected, call the specified method
@@ -86,9 +90,9 @@ namespace StartingWithSpeechRecognition
                 Console.WriteLine("test");
             }
             
-            if (e.Result.Text == "enova restart")
+            if (e.Result.Text.Split(' ')[0] == "enova")
             {
-                Console.WriteLine("Restarting your shit");
+                SendEnovaCommand(e.Result.Text);
             }
             else if (e.Result.Text == "exit")
             {
@@ -231,6 +235,45 @@ namespace StartingWithSpeechRecognition
             synthesizer.Dispose();
         }
         #endregion
+
+        private static void SendEnovaCommand(string s)
+        {
+            mConn = new RS232("1", 115200);
+            /*if (!mConn.OpenSerialConnection())
+            {
+                SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer();
+                speechSynthesizer.Speak("Error Looks like your Comm ports tied up.");
+                speechSynthesizer.Dispose();
+            }
+            else
+            {*/
+            //mConn.Write(WhatCommand(s));
+            WhatCommand(s);
+          //  }
+
+
+            mConn.StopListening();
+
+        }//end of send enova command
+
+        private static string WhatCommand(string command)
+        {
+            string[] vars = command.Split(' ');
+            switch (vars[1])
+            {
+                case "reboot":
+                    Console.WriteLine("Rebooting the system...");
+                    return "reboot -ia";
+
+                case "Identity":
+                    Console.WriteLine("Doing an Identity switch");
+                    return "@RT";
+
+                
+
+            }
+            return "";
+        }
 
     }
 }
