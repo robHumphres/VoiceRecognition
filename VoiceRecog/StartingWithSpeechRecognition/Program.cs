@@ -71,9 +71,9 @@ namespace StartingWithSpeechRecognition
             _recognizer = new SpeechRecognitionEngine();
             _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("test"))); // load a "test" grammar
             _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("exit"))); // load a "exit" grammar
-            _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("enova"))); // load a "test" grammar
-            _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("reboot"))); // load a "test" grammar
-            _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("enova reboot"))); // load a "test" grammar
+         //   _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("enova"))); // load a "test" grammar
+          //  _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("reboot"))); // load a "test" grammar
+           // _recognizer.LoadGrammar(new Grammar(new GrammarBuilder("enova reboot"))); // load a "test" grammar
 
 
 
@@ -90,13 +90,15 @@ namespace StartingWithSpeechRecognition
                 Console.WriteLine("test");
             }
             
-            if (e.Result.Text.Split(' ')[0] == "enova")
+            /*if (e.Result.Text.Split(' ')[0] == "enova")
             {
                 SendEnovaCommand(e.Result.Text);
             }
+            */
             else if (e.Result.Text == "exit")
             {
-                manualResetEvent.Set();
+                //manualResetEvent.Set();
+                Console.WriteLine("Exit");
             }
         }
         static void _recognizeSpeechAndWriteToConsole_SpeechRecognitionRejected(object sender, SpeechRecognitionRejectedEventArgs e)
